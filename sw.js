@@ -11,7 +11,8 @@ self.addEventListener("install", e => {
 });
 
 self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  // Only clear out older copies of this app. Other apps on the same web address (like Cash Flow) keep their own saved copies.
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("tacoma-") && k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 // App files: show the saved copy instantly, refresh it in the background when online.
